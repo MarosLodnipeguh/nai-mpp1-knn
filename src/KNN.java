@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KNN {
 
@@ -7,42 +9,93 @@ public class KNN {
 
     private List<List<String>> trainset;
     private List<List<String>> testset;
+    private List<Entry> trainSetEntries;
+    private List<Entry> testSetEntries;
     private List<String> attributes;
 
 
 
     public KNN(int k, List<List<String>> trainset, List<List<String>> testset, List<String> attributes) {
         this.k = k;
-
         this.trainset = trainset;
         this.testset = testset;
         this.attributes = attributes;
+        this.trainSetEntries = new ArrayList<>();
+        this.testSetEntries = new ArrayList<>();
+    }
+
+    // create Entry objects for each row in the trainset and testset + fill the lists
+    public void initEntries () {
+        for (List<String> row : trainset) {
+            trainSetEntries.add(createEntry(row));
+        }
+
+        int count = 0;
+
+        for (List<String> row : testset) {
+            testSetEntries.add(createEntry(row));
+            count++;
+        }
+        System.out.println("Testset entries: " + count);
+    }
+
+    // create Entry object from a row
+    public Entry createEntry(List<String> row) {
+        int size = row.size();
+
+        List<String> vectors = row.subList(0, size-2);
+        String name = row.get(size-1);
+        return new Entry(vectors, name);
     }
 
     public void knnstart () {
-        List<Entry> entries = new ArrayList<>();
 
-        for (List<String> row : trainset) {
-            entries.add(createEntry(row));
-        }
+        initEntries();
 
-        for (Entry entry : entries) {
+        double hit = 0;
+        double miss = 0;
 
-            fillNeighbors(entry, entries);
-            getKNeighbors(entry, k);
-            System.out.println("Entry: " + entry.getVectors() + " - " + entry.getName());
-            List<Entry> neighbors = entry.getkNeighbors();
-            for (Entry neighbor : neighbors) {
-                System.out.println("Neighbor: " + neighbor.getVectors() + " - " + neighbor.getName());
+
+        for (Entry entry : testSetEntries) {
+
+            fillNeighborsMap(entry, testSetEntries);
+            System.out.println("Entry: " + entry.getName());
+
+            List<Entry> kNeighbors = get_K_neighbors(entry, k);
+            Map<String, Integer> classifications = new HashMap<>();
+
+            for (Entry n : kNeighbors) {
+//                System.out.println("Neighbor: " + n.getVectors() + " - " + n.getName());
+
+                classifications.put(n.getName(), classifications.getOrDefault(n.getName(), 0) + 1);
+
             }
-            System.out.println("---------------------------------------------------");
+            String classification = classifications.entrySet().stream()
+                    .max((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
+                    .get().getKey();
+
+            if (classification.equals(entry.getName())) {
+                hit++;
+            } else {
+                miss++;
+            }
+
+            System.out.println("Classification: " + classification);
+
+            System.out.println("-----------------------");
         }
 
+        double total = hit + miss;
+
+        System.out.println(hit + "/" + total);
+
+        double accuracy = (hit / total)*100;
+        System.out.println("Accuracy: " + accuracy + "%");
 
     }
 
     // fill the distancesToAll map of each entry - the distance to all other entries
-    public void fillNeighbors (Entry entry, List<Entry> entries) {
+    public void fillNeighborsMap(Entry entry, List<Entry> entries) {
         for (Entry neighbor : entries) {
             if (entry != neighbor) {
                 double dist = calculateDistance(entry, neighbor);
@@ -65,33 +118,24 @@ public class KNN {
         }
 
         return Math.sqrt(distance);
+//        return distance;
     }
 
     // set the k nearest neighbors
-    public void getKNeighbors (Entry entry, int k) {
+    public List<Entry> get_K_neighbors(Entry entry, int k) {
+        List<Entry> kNeighbors = new ArrayList<>();
+
         entry.getDistancesToAll().entrySet().stream()
                 .sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
                 .limit(k)
-                .forEach(e -> entry.getkNeighbors().add(e.getKey()));
-    }
+                .forEach(e -> kNeighbors.add(e.getKey()));
 
-    public Entry createEntry(List<String> row) {
-        int size = row.size();
-
-        List<String> vectors = row.subList(0, size-2);
-        String name = row.getLast();
-        return new Entry(vectors, name, k);
+        return kNeighbors;
     }
 
 
 
-    public void setK(int k) {
-        this.k = k;
-    }
 
-    public void classify() {
-        System.out.println("Classify");
-    }
 
 
 }
