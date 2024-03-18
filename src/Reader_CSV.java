@@ -9,13 +9,11 @@ import java.util.List;
 public class Reader_CSV {
 
     private List<String> lines;
-    private List<String> sets;
     private List<List<String>> rows;
 
 
     public Reader_CSV() {
         lines = new ArrayList<>();
-        sets = new ArrayList<>();
         rows = new ArrayList<>();
     }
 
@@ -44,7 +42,6 @@ public class Reader_CSV {
 
         for (String line : lines) {
             String[] set = line.split(";");
-            sets.addAll(Arrays.asList(set));
             rows.add(Arrays.asList(set));
         }
 

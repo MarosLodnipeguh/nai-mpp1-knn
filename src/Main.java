@@ -1,14 +1,11 @@
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
     public static void main (String[] args) {
-
-
-        // read csv
-        // read attributes
-        // knn
-
 
         String trainsetPath = "Resources/train-set.csv";
         String testsetPath = "Resources/test-set.csv";
@@ -19,15 +16,10 @@ public class Main {
         List<String> attributes = null;
 
         Reader_CSV reader_csv = new Reader_CSV();
-
         trainset = reader_csv.read(trainsetPath);
 
         reader_csv = new Reader_CSV();
-
         testset = reader_csv.read(testsetPath);
-
-//        System.out.println(trainset.size());
-//        System.out.println(testset.size());
 
 //        for (List row : trainset) {
 //            System.out.println(row);
@@ -37,9 +29,30 @@ public class Main {
 //            System.out.println(row);
 //        }
 
-        KNN knn = new KNN(3, trainset, testset, attributes);
+        int k = 50;
+
+        KNN knn = new KNN(k, trainset, testset, attributes);
         knn.knnstart();
 
 
+        // chart purposes
+
+//        Map<Integer, Double> results = new HashMap<>();
+//        for (int i = 1; i < k+1; i++) {
+//            KNN knn = new KNN(i, trainset, testset, attributes);
+//            double res = knn.knnChart();
+//
+//            results.put(i, res);
+//        }
+//
+//        DecimalFormat df = new DecimalFormat("#.##");
+//        for (Map.Entry<Integer, Double> entry : results.entrySet()) {
+////            System.out.println("K: " + entry.getKey() + " | Accuracy: " + df.format(entry.getValue()) + "%");
+//            System.out.println(entry.getKey() + ";" + df.format(entry.getValue()));
+//        }
+
+
     }
+
+
 }
