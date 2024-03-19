@@ -93,8 +93,8 @@ public class KNN {
     }
 
     private String classifyEntry (Entry entry) {
-        // fill the distancesToAll map of the entry - the distance to all other entries
-        fillEntryDistancesToAllMap(entry, testSetEntries);
+        // fill the distancesToAll map of the entry - the distance to all other trainset entries
+        fillEntryDistancesToAllMap(entry, trainSetEntries);
 
         // get the k nearest neighbors
         List<Entry> kNeighbors = get_K_neighbors(entry, k);
@@ -114,7 +114,10 @@ public class KNN {
                 .map(Map.Entry::getKey)
                 .orElse(null);
 
+        return mostCommonItem;
 
+
+//
 //        Map<String, Integer> classifications = new LinkedHashMap<>();
 //
 //        // count the classifications of the k nearest neighbors
@@ -126,10 +129,9 @@ public class KNN {
 //        String classification = classifications.entrySet().stream()
 //                .max(Map.Entry.comparingByValue())
 //                .get().getKey();
-
+//
 //        return classification;
 
-        return mostCommonItem;
     }
 
     // fill the distancesToAll map of each entry - the distance to all other entries
