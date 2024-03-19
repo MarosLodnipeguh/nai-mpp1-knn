@@ -93,22 +93,24 @@ public class KNN {
     }
 
     private String classifyEntry (Entry entry) {
-        // fill the distancesToAll map of the entry - the distance to all other trainset entries
-        fillEntryDistancesToAllMap(entry, trainSetEntries);
+
+        // fill the distancesToAll map of each entry - the distance to all other trainset entries
+        for (Entry neighbor : trainSetEntries) {
+            double dist = calculateDistance(entry, neighbor);
+            entry.getDistancesToAllMap().put(neighbor, dist);
+        }
 
         // get the k nearest neighbors
         List<Entry> kNeighbors = get_K_neighbors(entry, k);
 
         List<String> kNeighborsNames = new ArrayList<>();
-        for (Entry n : kNeighbors) {
-            kNeighborsNames.add(n.getName());
-        }
+        kNeighbors.forEach(e -> kNeighborsNames.add(e.getName()));
 
-        // Count occurrences of each item using streams
+        // count the classifications of the k nearest neighbors
         Map<String, Long> itemCounts = kNeighborsNames.stream()
                 .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
-        // Find the item with the maximum count
+        // get the classification with the most occurrences
         String mostCommonItem = itemCounts.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
@@ -117,31 +119,20 @@ public class KNN {
         return mostCommonItem;
 
 
-//
-//        Map<String, Integer> classifications = new LinkedHashMap<>();
+//        Map<String, Integer> classificationCounts = new LinkedHashMap<>();
 //
 //        // count the classifications of the k nearest neighbors
 //        for (Entry n : kNeighbors) {
-//            classifications.put(n.getName(), classifications.getOrDefault(n.getName(), 0) + 1);
+//            classificationCounts.put(n.getName(), classificationCounts.getOrDefault(n.getName(), 0) + 1);
 //        }
 //
 //        // get the classification with the most occurrences (map value)
-//        String classification = classifications.entrySet().stream()
+//        String mostCommonClassification = classificationCounts.entrySet().stream()
 //                .max(Map.Entry.comparingByValue())
 //                .get().getKey();
 //
-//        return classification;
+//        return mostCommonClassification;
 
-    }
-
-    // fill the distancesToAll map of each entry - the distance to all other entries
-    public void fillEntryDistancesToAllMap (Entry origin, List<Entry> neighbors) {
-        for (Entry neighbor : neighbors) {
-            if (origin != neighbor) {
-                double dist = calculateDistance(origin, neighbor);
-                origin.getDistancesToAllMap().put(neighbor, dist);
-            }
-        }
     }
 
     // calculate the distance between two entries
@@ -168,6 +159,12 @@ public class KNN {
                 .sorted(Map.Entry.comparingByValue())
                 .limit(k)
                 .forEach(e -> kNeighbors.add(e.getKey()));
+
+//        System.out.println();
+//        entry.getDistancesToAllMap().entrySet().stream()
+//                .sorted(Map.Entry.comparingByValue())
+//                .limit(k)
+//                .forEach(e -> System.out.println(e.getKey().getName() + " " + e.getValue()));
 
         return kNeighbors;
     }

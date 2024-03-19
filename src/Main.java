@@ -29,27 +29,27 @@ public class Main {
 //            System.out.println(row);
 //        }
 
-        int k = 19;
+        int k = 20;
 
-//        KNN knn = new KNN(k, trainset, testset, attributes);
-//        knn.knnstart();
+        KNN knn = new KNN(k, trainset, testset, attributes);
+        knn.knnstart();
 
 
         // chart purposes
 
-        Map<Integer, Double> results = new HashMap<>();
-        for (int i = 1; i < k+1; i++) {
-            KNN knn = new KNN(i, trainset, testset, attributes);
-            double res = knn.knnChart();
-
-            results.put(i, res);
-        }
-
-        DecimalFormat df = new DecimalFormat("#.##");
-        for (Map.Entry<Integer, Double> entry : results.entrySet()) {
-//            System.out.println("K: " + entry.getKey() + " | Accuracy: " + df.format(entry.getValue()) + "%");
-            System.out.println(entry.getKey() + ";" + df.format(entry.getValue()));
-        }
+//        Map<Integer, Double> results = new HashMap<>();
+//        for (int i = 1; i < k+1; i++) {
+//            KNN knn = new KNN(i, trainset, testset, attributes);
+//            double res = knn.knnChart();
+//
+//            results.put(i, res);
+//        }
+//
+//        DecimalFormat df = new DecimalFormat("#.##");
+//        for (Map.Entry<Integer, Double> entry : results.entrySet()) {
+////            System.out.println("K: " + entry.getKey() + " | Accuracy: " + df.format(entry.getValue()) + "%");
+//            System.out.println(entry.getKey() + ";" + df.format(entry.getValue()));
+//        }
 
 
     }
