@@ -1,7 +1,5 @@
-import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class Main {
 
@@ -13,7 +11,6 @@ public class Main {
 
         List<List<String>> trainset;
         List<List<String>> testset;
-        List<String> attributes = null;
 
         Reader_CSV reader_csv = new Reader_CSV();
         trainset = reader_csv.read(trainsetPath);
@@ -31,7 +28,7 @@ public class Main {
 
         int k = 20;
 
-        KNN knn = new KNN(k, trainset, testset, attributes);
+        KNN knn = new KNN(k, trainset, testset);
         knn.knnstart();
 
 

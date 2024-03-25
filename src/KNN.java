@@ -9,15 +9,13 @@ public class KNN {
     private List<List<String>> testSetText;
     private List<Entry> trainSetEntries;
     private List<Entry> testSetEntries;
-    private List<String> attributes;
     int vectorCount;
 
 
-    public KNN(int k, List<List<String>> trainset, List<List<String>> testset, List<String> attributes) {
+    public KNN(int k, List<List<String>> trainset, List<List<String>> testset) {
         this.k = k;
         this.trainSetText = trainset;
         this.testSetText = testset;
-        this.attributes = attributes;
         this.trainSetEntries = new ArrayList<>();
         this.testSetEntries = new ArrayList<>();
     }
